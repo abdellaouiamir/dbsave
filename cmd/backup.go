@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/abdellaouiamir/dbsave.git/db"
 )
 
 // backupCmd represents the backup command
@@ -35,6 +36,16 @@ to quickly create a Cobra application.`,
 		allDb , _ := cmd.Flags().GetBool("all-databases")
 		outputFile , _ := cmd.Flags().GetString("outputFile")
 		fmt.Println(host, port, user, password, dataBase, allDb, outputFile)
+		testDB := db.DbObject{
+			Hostname: "localhost",
+			Port: "port",
+			User: user,
+			Password: "passzor",
+			DataBase: "ddfdf",
+		}
+		d := db.NewDB(db.Postgresql, testDB) 
+		fmt.Println(d)
+		fmt.Println(d.Backup(db.Dump))
 	},
 }
 
