@@ -23,8 +23,6 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("backup called")
-		fmt.Println("compress", compress, "verbose", verbose, "queit", quiet, "version", version)
 		for _, arg := range args {
 			fmt.Println(arg)
 		}
@@ -36,23 +34,22 @@ to quickly create a Cobra application.`,
 		allDb , _ := cmd.Flags().GetBool("all-databases")
 		outputFile , _ := cmd.Flags().GetString("outputFile")
 		fmt.Println(host, port, user, password, dataBase, allDb, outputFile)
-		testDB := db.DbObject{
-			Hostname: "localhost",
-			Port: "port",
-			User: user,
-			Password: "passzor",
-			DataBase: "ddfdf",
-		}
-		d := db.NewDB(db.Postgresql, testDB) 
-		fmt.Println(d)
-		fmt.Println(d.Backup(db.Dump))
+		var newDB db.DbObject
+		newDB.Hostname = host
+		newDB.Port = port
+		newDB.User = user
+		newDB.Password = password
+		newDB.DataBase = dataBase
+		dbms := db.NewDB(db.Postgresql, newDB) 
+		fmt.Println(dbms)
+		dbms.Backup(db.Dump)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(backupCmd)
 	// Local Flags
-	backupCmd.Flags().String("host", "localhost", "the host of the data base")
+	backupCmd.Flags().String("host", "", "the host of the data base")
 	backupCmd.Flags().String("port", "", "the data base port")
 	backupCmd.Flags().String("user", "", "username for the data base")
 	backupCmd.Flags().String("password", "", "password for the data base")

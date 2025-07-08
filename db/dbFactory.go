@@ -1,7 +1,5 @@
 package db
 
-import "fmt"
-
 // Strategie Supported
 type StrategieType int
 const (
@@ -41,7 +39,6 @@ func NewDB(dbType DBMS, dbO DbObject) DB {
 			password: dbO.Password,
 			database: dbO.DataBase,
 		}
-		fmt.Println("pos")
 	case Mysql:
 		d = mysqlDB{
 			hostname: dbO.Hostname,
@@ -50,7 +47,6 @@ func NewDB(dbType DBMS, dbO DbObject) DB {
 			password: dbO.Password,
 			database: dbO.DataBase,
 		}
-		fmt.Println("my")
 	case Mongo:
 		d = mongoDB{
 			hostname: dbO.Hostname,
@@ -59,7 +55,6 @@ func NewDB(dbType DBMS, dbO DbObject) DB {
 			password: dbO.Password,
 			database: dbO.DataBase,
 		}
-		fmt.Println("mong")
 	}
 	return d
 }
