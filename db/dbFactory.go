@@ -1,5 +1,7 @@
 package db
 
+import "fmt"
+
 // Strategie Supported
 type StrategieType int
 const (
@@ -9,8 +11,8 @@ const (
 )
 
 type DB interface {
-	Backup(t StrategieType) bool
-	Restore(t StrategieType) bool
+	Backup(t StrategieType) error
+	Restore(t StrategieType) error
 	Connection() bool
 }
 type DbObject struct {
@@ -19,6 +21,13 @@ type DbObject struct {
 	User string
 	Password string
 	DataBase string
+	AllDataBase bool
+	OutputFile string
+	Compress bool
+	Type DBMS
+}
+func (d DbObject) Error() string {
+	return fmt.Sprintf("not supported DBMS type %s", d.Type)
 }
 // DBMS Supported types
 type DBMS string
@@ -28,9 +37,9 @@ const (
 	Mongo DBMS = "mongo"
 )
 
-func NewDB(dbType DBMS, dbO DbObject) DB {
+func NewDB(dbO DbObject) (DB, error) {
 	var d DB = nil
-	switch dbType {
+	switch dbO.Type {
 	case Postgresql:
 		d = postgresqlDB{
 			hostname: dbO.Hostname,
@@ -38,14 +47,20 @@ func NewDB(dbType DBMS, dbO DbObject) DB {
 			user: dbO.User,
 			password: dbO.Password,
 			database: dbO.DataBase,
+			alldatabase: dbO.AllDataBase,
+			compress: dbO.Compress,
+			outputFile: dbO.OutputFile,
 		}
 	case Mysql:
 		d = mysqlDB{
-			hostname: dbO.Hostname,
-			port: dbO.Port,
-			user: dbO.User,
-			password: dbO.Password,
-			database: dbO.DataBase,
+			hostname:    dbO.Hostname,
+			port:        dbO.Port,
+			user:        dbO.User,
+			password:    dbO.Password,
+			database:    dbO.DataBase,
+			alldatabase: dbO.AllDataBase,
+			compress:    dbO.Compress,
+			outputFile:  dbO.OutputFile,
 		}
 	case Mongo:
 		d = mongoDB{
@@ -54,7 +69,12 @@ func NewDB(dbType DBMS, dbO DbObject) DB {
 			user: dbO.User,
 			password: dbO.Password,
 			database: dbO.DataBase,
+			alldatabase: dbO.AllDataBase,
+			compress:    dbO.Compress,
+			outputFile:  dbO.OutputFile,
 		}
+		default:
+		return d, dbO
 	}
-	return d
+	return d, nil
 }

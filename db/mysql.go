@@ -1,6 +1,9 @@
 package db
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type mysqlDB struct {
 	hostname string
@@ -8,30 +11,40 @@ type mysqlDB struct {
 	user string
 	password string
 	database string
+	alldatabase bool
+	compress bool
+	outputFile string
 }
 
-func (db mysqlDB) Backup(t StrategieType) bool {
+func (db mysqlDB) Backup(t StrategieType) error {
 	switch t{
 	case Dump:
 		fmt.Println("dump")
+		return nil
 	case Increment:
 		fmt.Println("increment")
+		return nil
 	case File:
 		fmt.Println("file")
+		return nil
 	}
-	return false
+	return errors.New("unsuported backup type")
 }
 
-func (db mysqlDB) Restore(t StrategieType) bool {
+func (db mysqlDB) Restore(t StrategieType) error {
 	switch t{
 	case Dump:
 		fmt.Println("dump")
+		return nil
 	case Increment:
 		fmt.Println("increment")
+		return nil
 	case File:
 		fmt.Println("file")
+		return nil
+	default:
+		return errors.New("unsuported restore type")
 	}
-	return true
 }
 
 func (db mysqlDB) Connection() bool {

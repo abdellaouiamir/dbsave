@@ -1,6 +1,9 @@
 package db
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type mongoDB struct {
 	hostname string
@@ -8,9 +11,12 @@ type mongoDB struct {
 	user string
 	password string
 	database string
+	alldatabase bool
+	compress bool
+	outputFile string
 }
 
-func (db mongoDB) Backup(t StrategieType) bool {
+func (db mongoDB) Backup(t StrategieType) error {
 	switch t{
 	case Dump:
 		fmt.Println("dump")
@@ -19,10 +25,10 @@ func (db mongoDB) Backup(t StrategieType) bool {
 	case File:
 		fmt.Println("file")
 	}
-	return false
+	return errors.New("not supported backup type")
 }
 
-func (db mongoDB) Restore(t StrategieType) bool {
+func (db mongoDB) Restore(t StrategieType) error {
 	switch t{
 	case Dump:
 		fmt.Println("dump")
@@ -31,7 +37,7 @@ func (db mongoDB) Restore(t StrategieType) bool {
 	case File:
 		fmt.Println("file")
 	}
-	return true
+	return errors.New("not supported restore type")
 }
 
 func (db mongoDB) Connection() bool {
